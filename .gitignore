@@ -1,2 +1,19 @@
-# .gitignore
+# Node.js
 node_modules/
+
+# Express.js
+/build/
+
+# React
+/client/build/
+/client/node_modules/
+
+# MongoDB
+*.log
+
+# Environment variables
+.env
+
+# Miscellaneous
+.DS_Store
+Thumbs.db
