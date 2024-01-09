@@ -3,7 +3,7 @@ const cors = require("cors");
 const app = express();
 const port = 3001;
 
-app.use(cors());
+app.use(cors({ origin: "http://localhost:5173" })); // Adjust the port based on your Vite setup
 app.use(express.json());
 
 let tasks = [
