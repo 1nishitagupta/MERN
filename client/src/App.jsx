@@ -1,4 +1,15 @@
 import { useState, useEffect } from "react";
+import {
+  TextField,
+  Button,
+  Typography,
+  List,
+  ListItem,
+  ListItemText,
+  ListItemSecondaryAction,
+  IconButton,
+} from "@mui/material";
+import { Delete as DeleteIcon, Check as CheckIcon } from "@mui/icons-material";
 
 function App() {
   const [todos, setTodos] = useState([]);
@@ -11,7 +22,7 @@ function App() {
 
   const fetchTodos = async () => {
     try {
-      const response = await fetch("/todos");
+      const response = await fetch("http://localhost:3001/todos");
       const data = await response.json();
       setTodos(data);
     } catch (error) {
@@ -23,7 +34,7 @@ function App() {
     e.preventDefault();
     try {
       const todo = { title, description, status: false };
-      await fetch("/todos/add", {
+      await fetch("http://localhost:3001/todos/add", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -40,7 +51,7 @@ function App() {
 
   const deleteTodo = async (id) => {
     try {
-      await fetch(`/todos/${id}`, {
+      await fetch(`http://localhost:3001/todos/${id}`, {
         method: "DELETE",
       });
       fetchTodos();
@@ -53,7 +64,7 @@ function App() {
     try {
       const todoToToggle = todos.find((todo) => todo._id === id);
       const updatedTodo = { ...todoToToggle, status: !todoToToggle.status };
-      await fetch(`/todos/update/${id}`, {
+      await fetch(`http://localhost:3001/todos/update/${id}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -67,35 +78,49 @@ function App() {
   };
 
   return (
-    <div>
-      <h1>ToDo List</h1>
-      <form onSubmit={addTodo}>
-        <input
-          type="text"
+    <div style={{ maxWidth: 600, margin: "auto", padding: 20 }}>
+      <Typography variant="h4" gutterBottom>
+        ToDo List
+      </Typography>
+      <form onSubmit={addTodo} style={{ marginBottom: 20 }}>
+        <TextField
+          variant="outlined"
           placeholder="Title"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
+          fullWidth
+          style={{ marginBottom: 10 }}
         />
-        <input
-          type="text"
+        <TextField
+          variant="outlined"
           placeholder="Description"
           value={description}
           onChange={(e) => setDescription(e.target.value)}
+          fullWidth
+          style={{ marginBottom: 10 }}
         />
-        <button type="submit">Add ToDo</button>
+        <Button type="submit" variant="contained" color="primary">
+          Add ToDo
+        </Button>
       </form>
-      <ul>
+      <List>
         {todos.map((todo) => (
-          <li
+          <ListItem
             key={todo._id}
             style={{ textDecoration: todo.status ? "line-through" : "none" }}
           >
-            {todo.title}: {todo.description}
-            <button onClick={() => toggleTodo(todo._id)}>Toggle</button>
-            <button onClick={() => deleteTodo(todo._id)}>Delete</button>
-          </li>
+            <ListItemText primary={todo.title} secondary={todo.description} />
+            <ListItemSecondaryAction>
+              <IconButton onClick={() => toggleTodo(todo._id)}>
+                <CheckIcon />
+              </IconButton>
+              <IconButton onClick={() => deleteTodo(todo._id)}>
+                <DeleteIcon />
+              </IconButton>
+            </ListItemSecondaryAction>
+          </ListItem>
         ))}
-      </ul>
+      </List>
     </div>
   );
 }
